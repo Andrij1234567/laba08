@@ -11,7 +11,6 @@ class SignInScreen extends StatelessWidget {
 
   Future<void> _sendLoginRequest(String login, String password) async {
     final dio = Dio();
-    try {
       final response = await dio.post(
         'https://myronchuk.requestcatcher.com/test',
         data: {
@@ -20,9 +19,6 @@ class SignInScreen extends StatelessWidget {
         },
       );
       print(response.data);
-    } catch (e) {
-      print('Error: $e');
-    }
   }
 
   @override
