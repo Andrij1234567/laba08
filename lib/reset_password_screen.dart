@@ -1,7 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 
 class ResetPasswordScreen extends StatelessWidget {
-  const ResetPasswordScreen({super.key});
+  ResetPasswordScreen({super.key});
+
+
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+
+  final emailController = TextEditingController();
+
+  Future<void> _resetPassword(String email) async {
+    final dio = Dio();
+await dio.post(
+        'https://myronchuk.requestcatcher.com/reset_password', // Replace with actual reset password API endpoint
+        data: {
+          'email': email,
+        },
+      );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,14 +31,15 @@ class ResetPasswordScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32.0),
           child: Form(
+            key: formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FlutterLogo(size: 80.0),
                 SizedBox(height: 20.0),
 
-
                 TextFormField(
+                  controller: emailController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter email';
@@ -38,26 +56,25 @@ class ResetPasswordScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 20.0),
 
-
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext ctx) {
-                          return const AlertDialog(
-                            title: Text('Message'),
-                            content: Text("Need to implement"),
-                          );
-                        },
-                      );
+                      if (formKey.currentState?.validate() ?? false) {
+                        _resetPassword(emailController.text);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Введіть валідні дані'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
                     },
                     child: Text('Reset', style: TextStyle(color: Colors.white)),
                   ),
                 ),
                 SizedBox(height: 10.0),
-
 
                 SizedBox(
                   width: double.infinity,
